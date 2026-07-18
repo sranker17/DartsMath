@@ -1,0 +1,5 @@
+- [x] Fix Compose BOM usage in `app/build.gradle.kts`
+- [x] Add missing Material Components dependency
+- [x] Fix `LocalHapticFeedback` import in `GameScreen.kt`
+- [x] Verify build success
+- [x] Create walkthrough

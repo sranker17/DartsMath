@@ -1,0 +1,4 @@
+- [x] Remove `android-kotlin` plugin from `libs.versions.toml`
+- [x] Remove `android-kotlin` plugin from root `build.gradle.kts`
+- [x] Remove `android-kotlin` plugin from `app/build.gradle.kts`
+- [x] Sync Gradle project to verify the fix
