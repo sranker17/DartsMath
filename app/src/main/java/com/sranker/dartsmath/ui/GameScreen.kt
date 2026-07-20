@@ -69,6 +69,10 @@ fun GameScreen(viewModel: GameViewModel = viewModel()) {
                 start()
             }
         } else if (uiState.feedbackState is FeedbackState.Incorrect) {
+            MediaPlayer.create(context, R.raw.nein)?.apply {
+                setOnCompletionListener { release() }
+                start()
+            }
             haptic.performHapticFeedback(HapticFeedbackType.LongPress)
         }
     }
