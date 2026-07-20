@@ -2,6 +2,7 @@ package com.sranker.dartsmath.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.sranker.dartsmath.R
 import com.sranker.dartsmath.model.Exercise
 import com.sranker.dartsmath.model.ExerciseGenerator
 import kotlinx.coroutines.delay
@@ -23,6 +24,7 @@ data class GameUiState(
     val streak: Int = 0,
     val totalSolved: Int = 0,
     val averageResponseTimeMs: Long = 0L,
+    val backgroundImageRes: Int? = null,
 )
 
 class GameViewModel : ViewModel() {
@@ -35,6 +37,22 @@ class GameViewModel : ViewModel() {
     fun onAnswerChanged(text: String) {
         val filtered = text.filter { it.isDigit() }
         _uiState.value = uiState.value.copy(userAnswer = filtered)
+    }
+
+    companion object {
+        private val backgroundImages = listOf(
+            R.drawable.bg_1,
+            R.drawable.bg_2,
+            R.drawable.bg_3,
+            R.drawable.bg_4,
+            R.drawable.bg_5,
+            R.drawable.bg_6,
+            R.drawable.bg_7,
+            R.drawable.bg_8,
+            R.drawable.bg_9,
+            R.drawable.bg_10,
+        )
+        private val usedBackgrounds = mutableSetOf<Int>()
     }
 
     fun checkAnswer() {
@@ -52,11 +70,21 @@ class GameViewModel : ViewModel() {
                 ((currentTotal - 1) * currentAverage + responseTime) / currentTotal
             }
 
+            val newBackground = if (currentStreak % 5 == 0) {
+                val available = backgroundImages.filter { it !in usedBackgrounds }
+                if (available.isEmpty()) usedBackgrounds.clear()
+                (if (available.isEmpty()) backgroundImages else available).random()
+                    .also { usedBackgrounds.add(it) }
+            } else {
+                _uiState.value.backgroundImageRes
+            }
+
             _uiState.value = _uiState.value.copy(
                 feedbackState = FeedbackState.Correct,
                 streak = currentStreak,
                 totalSolved = currentTotal,
                 averageResponseTimeMs = newAverage,
+                backgroundImageRes = newBackground,
             )
 
             viewModelScope.launch {

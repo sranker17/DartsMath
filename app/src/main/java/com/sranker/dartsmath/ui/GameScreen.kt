@@ -1,5 +1,6 @@
 package com.sranker.dartsmath.ui
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -33,6 +34,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -41,10 +43,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.sranker.dartsmath.R
 import android.media.MediaPlayer
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.draw.alpha
+import kotlin.random.Random
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.sranker.dartsmath.viewmodel.FeedbackState
 import com.sranker.dartsmath.viewmodel.GameViewModel
@@ -58,7 +63,8 @@ fun GameScreen(viewModel: GameViewModel = viewModel()) {
 
     LaunchedEffect(uiState.feedbackState) {
         if (uiState.feedbackState is FeedbackState.Correct) {
-            MediaPlayer.create(context, R.raw.wololo)?.apply {
+            val soundRes = if (Random.nextBoolean()) R.raw.wololo else R.raw.yippee
+            MediaPlayer.create(context, soundRes)?.apply {
                 setOnCompletionListener { release() }
                 start()
             }
@@ -71,13 +77,25 @@ fun GameScreen(viewModel: GameViewModel = viewModel()) {
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background,
     ) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .imePadding()
-                .padding(24.dp),
-            contentAlignment = Alignment.Center,
-        ) {
+        Box(modifier = Modifier.fillMaxSize()) {
+            uiState.backgroundImageRes?.let { res ->
+                Image(
+                    painter = painterResource(res),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .alpha(0.1f),
+                    contentScale = ContentScale.Crop,
+                )
+            }
+
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .imePadding()
+                    .padding(24.dp),
+                contentAlignment = Alignment.Center,
+            ) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
@@ -190,9 +208,10 @@ fun GameScreen(viewModel: GameViewModel = viewModel()) {
                             color = Color(0xFF4CAF50),
                         ),
                         textAlign = TextAlign.Center,
-                    )
-                }
-            }
-        }
-    }
-}
+                    )   // Text
+                }       // AnimatedVisibility
+            }           // Column
+        }               // inner Box
+    }                   // outer Box
+}                       // Surface
+}                       // GameScreen fun
