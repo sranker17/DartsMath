@@ -39,8 +39,11 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.unit.dp
+import com.sranker.dartsmath.R
+import android.media.MediaPlayer
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.sranker.dartsmath.viewmodel.FeedbackState
@@ -51,8 +54,15 @@ fun GameScreen(viewModel: GameViewModel = viewModel()) {
     val uiState by viewModel.uiState.collectAsState()
     val haptic = LocalHapticFeedback.current
 
+    val context = LocalContext.current
+
     LaunchedEffect(uiState.feedbackState) {
-        if (uiState.feedbackState is FeedbackState.Incorrect) {
+        if (uiState.feedbackState is FeedbackState.Correct) {
+            MediaPlayer.create(context, R.raw.wololo)?.apply {
+                setOnCompletionListener { release() }
+                start()
+            }
+        } else if (uiState.feedbackState is FeedbackState.Incorrect) {
             haptic.performHapticFeedback(HapticFeedbackType.LongPress)
         }
     }
