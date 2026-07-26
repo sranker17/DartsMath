@@ -11,12 +11,12 @@ sealed interface DartThrow {
 
     data class Double(val number: Int) : DartThrow {
         override val score: Int get() = number * 2
-        override val displayText: String get() = "${number}×2"
+        override val displayText: String get() = "D${number}"
     }
 
     data class Triple(val number: Int) : DartThrow {
         override val score: Int get() = number * 3
-        override val displayText: String get() = "${number}×3"
+        override val displayText: String get() = "T${number}"
     }
 
     data object OuterBull : DartThrow {
