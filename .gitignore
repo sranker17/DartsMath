@@ -65,4 +65,5 @@ replay_pid*
 /gradlew
 /.vscode
 
-docs/example/
+docs/
+app/
